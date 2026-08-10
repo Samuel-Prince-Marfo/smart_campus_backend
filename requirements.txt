@@ -1,0 +1,11 @@
+# Smart Campus — backend dependencies
+# All packages below ship as pre-built wheels for CPython 3.9–3.13, so a plain
+# `pip install -r requirements.txt` needs no C compiler on Windows/macOS/Linux.
+
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+SQLAlchemy==2.0.36
+pydantic==2.10.4
+pydantic-settings==2.7.1
+PyJWT==2.10.1
+email-validator==2.2.0
