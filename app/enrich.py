@@ -243,6 +243,8 @@ def enrich_course(db: Session, c: models.Course) -> Dict[str, Any]:
         "enrolled_count": len(enrolled),
         "is_current": c.academic_year == period["academic_year"]
         and c.semester_no == period["semester"],
+        "stream": c.stream,
+        "schedule_type": c.schedule_type,
     }
 
 
@@ -357,6 +359,9 @@ def exam_dict(e: models.Exam, *, strip_answers: bool = False) -> Dict[str, Any]:
         "shuffle": bool(e.shuffle),
         "questions": questions,
         "status": e.status,
+        "stream": e.stream,
+        "schedule_type": e.schedule_type,
+        "screen_capture_enabled": bool(e.screen_capture_enabled),
     }
 
 
@@ -373,6 +378,8 @@ def attempt_dict(a: models.ExamAttempt) -> Dict[str, Any]:
         "question_order": a.question_order or [],
         "status": a.status,
         "last_saved_at": a.last_saved_at,
+        "violations": a.violations or [],
+        "violation_count": a.violation_count or 0,
     }
 
 

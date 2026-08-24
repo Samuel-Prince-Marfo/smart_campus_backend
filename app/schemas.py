@@ -74,6 +74,8 @@ class CourseCreate(BaseModel):
     semester_no: Optional[int] = None
     academic_year: Optional[str] = None
     lecturer_id: Optional[str] = None
+    stream: Optional[str] = None  # A|B|null
+    schedule_type: Optional[str] = None  # regular|weekend
 
 
 # ----- Attendance -----------------------------------------------------------
@@ -143,6 +145,9 @@ class ExamCreate(BaseModel):
     shuffle: Optional[bool] = True
     questions: Optional[List[ExamQuestionIn]] = None
     status: Optional[str] = "scheduled"
+    stream: Optional[str] = None  # A|B|null (all)
+    schedule_type: Optional[str] = None  # regular|weekend
+    screen_capture_enabled: Optional[bool] = True
 
 
 class AttemptSave(BaseModel):
@@ -152,6 +157,11 @@ class AttemptSave(BaseModel):
 class AttemptSubmit(BaseModel):
     answers: Optional[Dict[str, int]] = None
     auto: Optional[bool] = False
+
+
+class ViolationReport(BaseModel):
+    type: str  # tab_switch|fullscreen_exit|screenshot_attempt|visibility_change
+    timestamp: str
 
 
 # ----- Admin ----------------------------------------------------------------

@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from .. import enrich, models, security
 from ..database import get_db
 from ..deps import get_current_user
-from ..schemas import AttemptSave, AttemptSubmit, ExamCreate
+from ..schemas import AttemptSave, AttemptSubmit, ExamCreate, ViolationReport
 
 router = APIRouter(tags=["exams"])
 
@@ -82,6 +82,9 @@ def create_exam(
         shuffle=body.shuffle is not False,
         questions=questions,
         status=body.status or "scheduled",
+        stream=body.stream,
+        schedule_type=body.schedule_type,
+        screen_capture_enabled=body.screen_capture_enabled is not False,
     )
     db.add(e)
     enrich.audit(db, user, "exam.create", e.title)
@@ -220,3 +223,24 @@ def list_attempts(exam_id: str, db: Session = Depends(get_db)):
         select(models.ExamAttempt).where(models.ExamAttempt.exam_id == exam_id)
     ).all()
     return [enrich.attempt_dict(a) for a in rows]
+
+
+@router.post("/attempts/{attempt_id}/violations")
+def report_violation(
+    attempt_id: str,
+    body: ViolationReport,
+    db: Session = Depends(get_db),
+    user: models.User = Depends(get_current_user),
+):
+    a = db.get(models.ExamAttempt, attempt_id)
+    if not a:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Attempt not found")
+    if a.status != "in_progress":
+        return enrich.attempt_dict(a)
+
+    violations = list(a.violations or [])
+    violations.append({"type": body.type, "timestamp": body.timestamp})
+    a.violations = violations
+    a.violation_count = len(violations)
+    db.commit()
+    return {"ok": True, "violation_count": a.violation_count}

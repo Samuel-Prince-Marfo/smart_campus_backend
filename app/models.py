@@ -73,6 +73,8 @@ class Course(Base):
     semester: Mapped[str | None] = mapped_column(String, nullable=True)  # display label
     credits: Mapped[int] = mapped_column(Integer, default=3, nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    stream: Mapped[str | None] = mapped_column(String, nullable=True)  # A|B|null (all)
+    schedule_type: Mapped[str | None] = mapped_column(String, nullable=True)  # regular|weekend
 
 
 class Enrolment(Base):
@@ -173,6 +175,9 @@ class Exam(Base):
     shuffle: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     questions: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
     status: Mapped[str] = mapped_column(String, default="scheduled", nullable=False)
+    stream: Mapped[str | None] = mapped_column(String, nullable=True)  # A|B|null (all)
+    schedule_type: Mapped[str | None] = mapped_column(String, nullable=True)  # regular|weekend
+    screen_capture_enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
 
 class ExamAttempt(Base):
@@ -189,6 +194,8 @@ class ExamAttempt(Base):
     question_order: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
     status: Mapped[str] = mapped_column(String, default="in_progress", nullable=False)
     last_saved_at: Mapped[str | None] = mapped_column(String, nullable=True)
+    violations: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
+    violation_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
 
 class Notification(Base):

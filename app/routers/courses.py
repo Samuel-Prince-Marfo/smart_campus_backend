@@ -103,6 +103,8 @@ def create_course(
         semester=f"{year} · Sem {sem_no}",
         credits=int(body.credits or 3),
         description=body.description,
+        stream=body.stream,
+        schedule_type=body.schedule_type or "regular",
     )
     db.add(c)
     db.flush()
